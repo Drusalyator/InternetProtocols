@@ -1,5 +1,6 @@
-"""Этот модуль реализует логику трассировщика"""
+﻿"""Этот модуль реализует логику трассировщика"""
 import re
+import sys
 from subprocess import check_output, CalledProcessError
 
 try:
@@ -17,7 +18,7 @@ def tracing(tracing_address):
     """Трассировка до указанного адреса (только IPv4)"""
     print(f'> Tracing to the {tracing_address}. Wait...')
     try:
-        data = check_output(['tracert', '-d', '-w', '400', '-4', tracing_address]).decode('cp866')
+        data = check_output(['tracert', '-d', '-w', '1000', '-4', tracing_address]).decode('cp866')
         result = re.findall(READY, data)
         if len(result) != 0:
             print_info(_find_info(_find_ip_addresses(data)))

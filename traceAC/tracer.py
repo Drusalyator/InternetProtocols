@@ -1,4 +1,4 @@
-"""Этот модуль реализует логику трассировщика"""
+﻿"""Этот модуль реализует логику трассировщика"""
 import re
 import sys
 import socket
@@ -48,7 +48,7 @@ class Tracer:
         """Трассировка до указанного адреса (только IPv4)"""
         print(f'> Tracing to the {self._tracing_address}. Wait...')
         try:
-            data = check_output(['tracert', '-d', '-4', self._tracing_address]).decode('cp866')
+            data = check_output(['tracert', '-d', '-w', '1000', '-4', self._tracing_address]).decode('cp866')
             result = re.findall(READY, data)
             if len(result) != 0:
                 self._find_info(self._find_ip_addresses(data))
