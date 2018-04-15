@@ -1,8 +1,10 @@
 """Модуль, реализующий кэш DNS сервера"""
 import sys
+import pickle
 from datetime import datetime
 from time import time
 from threading import RLock
+
 
 try:
     from dns_packet import *
@@ -60,10 +62,22 @@ class Cache:
                         transaction_id = request_frame.header.transaction_id
                         print(f"> {datetime.now()} > Entry found in cache. The answer is formed")
                         return DNSPacket(make_standard_header(transaction_id, 1, len(answers), 0, 0),
-                                           request_frame.queries, answers)
+                                         request_frame.queries, answers)
 
 
 def make_standard_header(transactions_id, quest_len, answer_len, auth_len, add_len):
     """Создание стандартного заголовка для ответа"""
     return Header(transactions_id, 1, 0, 0, 0, 1, 0, 0, quest_len, answer_len, auth_len, add_len)
 
+
+def save_cache_in_file(cache: Cache):
+    """Сохранить кэш в файл"""
+    with open("dns.cache", "wb") as file:
+        pickle.dump(cache.cache, file)
+
+
+def load_cache_from_file(cache: Cache):
+    """Загрузить кэш из файла"""
+    with open("dns.cache", "rb") as file:
+        loading_cache = pickle.load(file)
+        cache.cache = loading_cache

@@ -86,6 +86,11 @@ class DNSServer:
 
     def start_server(self):
         """Запусть сервер"""
+        try:
+            load_cache_from_file(self._cache)
+            print(f"> {datetime.now()} Cache was loaded from file 'dns.cache'")
+        except Exception as exception:
+            print(f"> {datetime.now()} Could not load cache from file : {exception}")
         receive_thread = Thread(target=self._receive_frame)
         try:
             receive_thread.start()
@@ -97,5 +102,10 @@ class DNSServer:
         except KeyboardInterrupt:
             receive_thread.join(3)
             self.socket.close()
+            try:
+                save_cache_in_file(self._cache)
+                print(f"> {datetime.now()} > Cache was saved in file: 'dns.cache'")
+            except Exception as exception:
+                print(f"> {datetime.now()} > Could not save the cache: {exception}")
             print(f'> {datetime.now()} > Server was stop')
             sys.exit()
