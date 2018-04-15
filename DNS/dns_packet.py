@@ -236,7 +236,7 @@ class Queries:
 class Answer:
     """Класс ответа DNS пакета"""
 
-    def __init__(self, aname, atype, aclass, ttl, data_length, address):
+    def __init__(self, aname, atype, address, aclass=1, ttl=600, data_length=4):
         """Контруктор"""
         self._aname = aname                 # Доменное имя
         self._atype = atype                 # Тип запроса
@@ -380,7 +380,7 @@ def _read_answer(bit_packet: bitstring.Bits, start_index):
     ttl = bit_packet[end_name_index + 32:end_name_index + 64].uint
     data_length = bit_packet[end_name_index + 64: end_name_index + 80].uint
     address, end_index = _read_address(bit_packet, end_name_index + 80, data_length, atype)
-    return Answer(aname, atype, aclass, ttl, data_length, address), end_index
+    return Answer(aname, atype, address, aclass, ttl, data_length), end_index
 
 
 def _read_name(bit_packet: bitstring.Bits, index, name):
