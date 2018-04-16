@@ -39,7 +39,7 @@ class Cache:
                             if flag:
                                 cache_entry.append((answer.address, time() + answer.ttl))
                                 counter += 1
-            print(f"> {datetime.now()} > {counter} entries have been added to the cache")
+            print(f"> {datetime.now()} > {counter} entries have been added to the cache\n")
 
     def find_entry(self, request_frame: DNSPacket):
         """Поиск записи в кеше и формирование ответного пакета"""
@@ -80,4 +80,12 @@ def load_cache_from_file(cache: Cache):
     """Загрузить кэш из файла"""
     with open("dns.cache", "rb") as file:
         loading_cache = pickle.load(file)
+        if len(loading_cache) != 0:
+            counter = 0
+            for entries in loading_cache.items():
+                for entry in entries[1]:
+                    if time() > entry[1]:
+                        entries[1].remove(entry)
+                        counter += 1
+            print(f"\n> {datetime.now()} > {counter} entry(ies) out of date and was deleted")
         cache.cache = loading_cache
